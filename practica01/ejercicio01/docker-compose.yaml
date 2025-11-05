@@ -8,7 +8,6 @@ services:
     environment:
      - N8N_RUNNERS_ENABLED=true
      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
-     - WORKFLOWS_FOLDER=/files/workflows
     volumes:
       - n8n_data:/home/node/.n8n
       - ./local-files:/files
