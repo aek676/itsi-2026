@@ -9,8 +9,9 @@ services:
      - N8N_RUNNERS_ENABLED=true
      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
     volumes:
-      - n8n_data:/home/node/.n8n
       - ./local-files:/files
+      - ./database.sqlite:/home/node/.n8n/database.sqlite
+      - n8n_data:/home/node/.n8n
 
 volumes:
   n8n_data:

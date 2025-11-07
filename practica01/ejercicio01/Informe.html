@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe: Práctica 1 de n8n</title>
+    
+    <!-- CSS Integrado para un solo archivo -->
+    <style>
+        /* --- Estilos Generales --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Contenedor Principal --- */
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 25px 40px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+        }
+
+        /* --- Encabezados --- */
+        h1, h2 {
+            color: #003366; /* Un azul oscuro profesional */
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-top: 40px; /* Espacio antes de cada ejercicio */
+        }
+
+        /* --- Párrafos y Texto --- */
+        p {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        /* --- Imágenes --- */
+        img.screenshot {
+            max-width: 100%; /* Hace la imagen responsive */
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* --- Autor --- */
+        .autor {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #777;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Práctica 1: Introducción a n8n</h1>
+            <p class="autor">Realizado por: Anass El Jabiry Kaddir</p>
+        </header>
+
+        <main>
+            <!-- 
+              SECCIÓN DE EJERCICIO
+              Copia y pega este bloque <section> para cada ejercicio de tu práctica
+            -->
+            <section id="ejercicio-1">
+                <h2>Ejercicio Guiado 1: Creación de un Flujo "Hola Mundo"</h2>
+                
+                <p>
+                    <!-- 
+                      AQUÍ VA TU EXPLICACIÓN: 
+                      Describe el objetivo del ejercicio y los pasos que seguiste. 
+                      Por ejemplo: "El objetivo era crear un workflow 'Hola Mundo' que se ejecuta manualmente..."
+                    -->
+                    Para este primer ejercicio, se ha seguido la guía paso a paso. El objetivo era familiarizarse con la interfaz de n8n creando un nodo 'Start' y conectándolo a un nodo 'Set'. Dentro del nodo 'Set', se configuró un valor para generar un mensaje simple de "Hola Mundo". Finalmente, se ejecutó el flujo manualmente ("Execute Workflow") para verificar la salida JSON correcta, confirmando que el flujo funcionaba como se esperaba.
+                </p>
+
+                <!-- 
+                  IMAGEN ACTUALIZADA:
+                  Esta es la URL directa de tu imagen.
+                -->
+                <img class="screenshot" 
+                     src="https://i.imgur.com/wHXaEeE.png" 
+                     alt="Captura de pantalla del Ejercicio 1: Hello World">
+            </section>
+
+            <hr>
+
+            <!-- SECCIÓN DE EJERCICIO 2 -->
+            <section id="ejercicio-2">
+                <h2>Ejercicio Guiado 2: Interacción con una API REST Pública</h2>
+                <p>
+                    En este ejercicio, el objetivo fue interactuar con una API REST pública. Se utilizó el nodo 'HTTP Request' para realizar una petición GET a la API (en este caso, 'reqres.in') y obtener datos específicos de un usuario. La captura de pantalla muestra la configuración del nodo con la URL de la API y la respuesta JSON exitosa, demostrando cómo n8n puede consumir y mostrar datos de servicios externos.
+                </p>
+                <img class="screenshot" 
+                     src="https://i.imgur.com/5BKIUE1.png" 
+                     alt="Captura de pantalla del Ejercicio 2: API REST">
+            </section>
+            
+            <hr>
+
+            <!-- SECCIÓN DE EJERCICIO 3 -->
+            <section id="ejercicio-3">
+                <h2>Ejercicio Guiado 3: Transformación y Limpieza de Datos</h2>
+                <p>
+                    Este ejercicio se centró en la manipulación de datos. Después de recibir información (posiblemente de la API del ejercicio anterior), se utilizó el nodo 'Set' para limpiar y transformar los datos. Como muestra la captura, se renombraron campos (ej. 'first_name' a 'nombre') y se eliminaron otros ('avatar', 'support') para dejar solo la información relevante y en el formato deseado.
+                </p>
+                <img class="screenshot" 
+                     src="https://i.imgur.com/n8BrbiK.png" 
+                     alt="Captura de pantalla del Ejercicio 3: Transformación de Datos">
+            </section>
+
+            <!-- (Sigue añadiendo secciones <section> para los ejercicios 4, 5, etc.) -->
+
+        </main>
+    </div>
+
+</body>
+</html>
