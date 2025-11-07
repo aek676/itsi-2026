@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título de la nueva práctica -->
+    <title>Informe: Práctica 2 de n8n</title>
+    
+    <!-- CSS Integrado (mismo estilo PDF) -->
+    <style>
+        /* --- Estilos Generales (Aspecto PDF) --- */
+        body {
+            font-family: Georgia, "Times New Roman", Times, serif;
+            line-height: 1.6;
+            /* Cambiamos el fondo gris a blanco */
+            background-color: #ffffff;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Contenedor Principal (Simulando una hoja) --- */
+        .container {
+            /* Hacemos que ocupe el 100% del ancho */
+            width: 100%;
+            max-width: none; /* Eliminamos el ancho máximo */
+            margin: 0; /* Eliminamos márgenes */
+            /* Ajustamos el padding para pantallas anchas */
+            padding: 40px 60px;
+            background-color: #ffffff;
+            /* Eliminamos los bordes y sombras de la "hoja" */
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+            /* Importante para que el padding no cause un desbordamiento horizontal */
+            box-sizing: border-box; 
+        }
+
+        /* --- Encabezados --- */
+        h1, h2 {
+            color: #000000;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 2.4em;
+            text-align: center;
+            border-bottom: none;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.7em;
+            margin-top: 35px;
+        }
+
+        /* --- Párrafos y Texto --- */
+        p {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        /* --- Imágenes --- */
+        img.screenshot {
+            max-width: 100%; 
+            height: auto;
+            border-radius: 0;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            box-shadow: none;
+        }
+        
+        /* --- Autor --- */
+        .autor {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <!-- Título de la Práctica 2 (puedes cambiarlo) -->
+            <h1>Práctica 2: Lógica, Programación y Manejo de Colecciones en n8n</h1>
+            <p class="autor">Realizado por: Anass El Jabiry Kaddir</p>
+        </header>
+
+        <main>
+            <!-- 
+              SECCIÓN DE EJERCICIO 1 (Práctica 2)
+              Flujo Guiado
+            -->
+            <section id="ejercicio-1">
+                <h2>Desarrollo del Flujo de Trabajo Guiado</h2>
+                
+                <p>
+                    En este flujo guiado, hemos construido un proceso automatizado que se ejecuta periódicamente. El flujo comienza con un <code>Schedule Trigger</code> (disparador programado) que, para la prueba, se configuró para activarse cada minuto.
+                </p>
+                <p>
+                    A continuación, un nodo <code>HTTP Request</code> consulta la API de chistes (JokeAPI) para obtener una colección de 5 chistes de programación. Como la API devuelve los 5 chistes en un solo array, utilizamos el nodo <code>Split Out</code> para separar esta colección en 5 ítems individuales.
+                </p>
+                <p>
+                    Posteriormente, un nodo <code>IF</code> evalúa cada chiste de forma independiente comprobando la propiedad booleana <code>safe</code>. Finalmente, el flujo se bifurca: si <code>safe</code> es <code>true</code>, un nodo <code>Edit Fields (Set)</code> añade el campo <code>clasificacion</code> con el valor 'Chiste seguro'. Si es <code>false</code>, otro nodo <code>Edit Fields (Set)</code> añade el valor 'Chiste NO seguro'. La captura de pantalla muestra el flujo completo y su lógica condicional.
+                </s
+
+                <!-- 
+                  IMAGEN ACTUALIZADA:
+                -->
+                <img class="screenshot" 
+                     src="https://i.imgur.com/V2gD5PJ.png" 
+                     alt="Captura de pantalla del Flujo de Trabajo Guiado">
+            </section>
+
+            <hr>
+
+            <!-- 
+              SECCIÓN DE EJERCICIO 2 (Práctica 2) - RESTAURADA
+              Ejercicio Propuesto 1
+            -->
+            <section id="ejercicio-2">
+                <h2>Ejercicio 1: Filtrado por Categoría (Dificultad: Baja)</h2>
+                
+                <p>
+                    Para este ejercicio, se modificó el flujo de trabajo guiado. El primer cambio fue en el nodo <code>HTTP Request</code>, donde se ajustó la URL para solicitar chistes de las categorías "Programming" y "Misc" simultáneamente, tal como permite la documentación de JokeAPI.
+                </p>
+                <p>
+                    Después del nodo <code>Split Out</code> (que se mantiene para procesar cada chiste), se reconfiguró el nodo <code>IF</code>. En lugar de comprobar el campo <code>safe</code>, la condición se ajustó para evaluar si el campo <code>category</code> es igual a "Programming".
+                </p>
+                <p>
+                    Finalmente, los nodos <code>Edit Fields (Set)</code> en las ramas <code>true</code> y <code>false</code> se modificaron para añadir un nuevo campo (ej. <code>clasificacion_cat</code>) que refleja si el chiste pertenece a 'Programming' o a 'Misc', respectivamente.
+                </p>
+
+                <img class="screenshot" 
+                     src="https://i.imgur.com/52Yf1qP.png" 
+                     alt="Captura de pantalla del Ejercicio 1 - Filtrado por Categoría">
+            </section>
+
+            <hr>
+
+            <!-- 
+              SECCIÓN DE EJERCICIO 3 (Práctica 2) - RESTAURADA
+              Ejercicio Propuesto 2
+            -->
+            <section id="ejercicio-3">
+                <h2>Ejercicio 2: Análisis de Productos (Dificultad: Media)</h2>
+                
+                <p>
+                    Este ejercicio consistió en crear un flujo desde cero para analizar productos de la API "Fake Store API". El flujo se inicia con un <code>Schedule Trigger</code> (configurado para ejecutarse diariamente) y un <code>HTTP Request</code> para obtener la lista completa de productos.
+                </p>
+                <p>
+                    A continuación, se utiliza un nodo <code>Split Out</code> para procesar cada producto de la colección individualmente, tal como se requería.
+                </p>
+                <img class="screenshot" 
+                     src="https://i.imgur.com/4N1GM3K.png" 
+                     alt="Captura de pantalla del Ejercicio 2 - Nodo Split Out">
+
+                <p>
+                    Posteriormente, se implementa la lógica condicional con un nodo <code>IF</code>. Este nodo se configura para comprobar si el campo <code>price</code> de cada producto es 'greater than' (superior a) 100.
+                </p>
+                <img class="screenshot" 
+                     src="https://i.imgur.com/9SXU1KK.png" 
+                     alt="Captura de pantalla del Ejercicio 2 - Nodo IF">
+
+                <p>
+                    Para la rama <code>true</code> (productos con precio superior a 100), se añade un nodo <code>Edit Fields (Set)</code> que crea un nuevo campo llamado <code>etiqueta</code> con el valor "Producto Premium".
+                </p>
+                <img class="screenshot" 
+                     src="https://i.imgur.com/RuFoVVS.png" 
+                     alt="Captura de pantalla del Ejercicio 2 - Rama True (Premium)">
+
+                <p>
+                    Para la rama <code>false</code> (productos con precio de 100 o inferior), se añade un nodo <code>Edit Fields (Set)</code> similar, pero esta vez asignando el valor "Producto Estándar" al campo <code>etiqueta</code>.
+                </p>
+                <img class="screenshot" 
+                     src="https://i.imgur.com/lZBUKPe.png" 
+                     alt="Captura de pantalla del Ejercicio 2 - Rama False (Estándar)">
+            </section>
+
+            <hr>
+
+            <!-- 
+              SECCIÓN DE EJERCICIO 4 (Práctica 2)
+              Ejercicio Propuesto 3
+            -->
+            <section id="ejercicio-4">
+                <h2>Ejercicio 3: Planificador de Festivos (Dificultad: Alta)</h2>
+                
+                <p>
+                    El último ejercicio fue el más avanzado, requiriendo la orquestación de dos APIs. El flujo se inicia con un <code>Manual Trigger</code> y un <code>HTTP Request</code> que obtiene la lista de festivos de España para 2025 desde la API "Nager.Date".
+                </p>
+                <p>
+                    Se utiliza un nodo <code>Split Out</code> para procesar cada festivo de la colección como un ítem individual.
+                </p>
+                <img class="screenshot" 
+                     src="https://i.imgur.com/hDjUjet.png" 
+                     alt="Captura de pantalla del Ejercicio 3 - Nodo Split Out">
+
+                <p>
+                    A continuación, un nodo <code>IF</code> filtra los festivos, comprobando si el campo booleano <code>global</code> (que indica si es un festivo nacional) 'is true'.
+                </p>
+                <img class="screenshot" 
+                     src="https://i.imgur.com/4QLICVN.png" 
+                     alt="Captura de pantalla del Ejercicio 3 - Nodo IF (Global)">
+
+                <p>
+                    Para la rama <code>true</code> (festivos nacionales), se añade un segundo nodo <code>HTTP Request</code>. Este nodo llama a la "Bored API" para obtener una actividad aleatoria.
+                </p>
+                <img class="screenshot" 
+                     src="https://i.imgur.com/H7xnBMN.png" 
+                     alt="Captura de pantalla del Ejercicio 3 - HTTP Request (Bored API)">
+
+                <p>
+                    Finalmente, en la misma rama <code>true</code>, se utiliza un nodo <code>Merge</code> para combinar los datos del festivo (que vienen de la rama <code>true</code> del <code>IF</code>) con los datos de la actividad aleatoria (que vienen del segundo <code>HTTP Request</code>). Este nodo <code>Merge</code> pasa los datos combinados a un nodo <code>Edit Fields (Set)</code>, que configura los dos campos finales: <code>festivo_nombre</code> (mapeado desde el <code>name</code> del festivo) y <code>actividad_sugerida</code> (mapeado desde la <code>activity</code> de la Bored API), produciendo la salida deseada. La rama <code>false</code> (festivos no nacionales) no realiza ninguna acción.
+                </p>
+                <img class="screenshot" 
+                     src="https://i.imgur.com/sBhWNbO.png" 
+                     alt="Captura de pantalla del Ejercicio 3 - Nodo Set (Resultado final)">
+            </section>
+
+
+        </main>
+    </div>
+
+</body>
+</html>
