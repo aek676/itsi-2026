@@ -1,0 +1,66 @@
+services:
+  # Servicio de la API Web (Flask)
+  web:
+    build: ./web
+    restart: always
+    container_name: task-manager-web
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./web:/app  # Montaje para desarrollo en vivo
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/taskdb
+      - RABBITMQ_URL=amqp://guest:guest@mq:5672/%2F
+    depends_on:
+      - db
+      - mq
+
+  # Servicio del Trabajador Asíncrono (Consumer)
+  worker:
+    build: ./worker
+    restart: always
+    container_name: task-manager-worker
+    volumes:
+      - ./worker:/app  # Montaje para desarrollo en vivo
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@mq:5672/%2F
+    depends_on:
+      - mq
+
+  # Servicio de Notificaciones
+  notifier:
+    build: ./notifier
+    restart: always
+    container_name: task-manager-notifier
+    volumes:
+      - ./notifier:/app  # Montaje para desarrollo en vivo
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@mq:5672/%2F
+      - WEBHOOK_URL=https://webhook.site/12345678-1234-1234-1234-123456789000
+    depends_on:
+      - mq
+
+  # Servicio de la Base de Datos
+  db:
+    image: postgres:14-alpine
+    container_name: task-manager-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=taskdb
+      # - POSTGRES_HOST_AUTH_METHOD=trust 
+    ports:
+      - "5433:5432"  # Exponer para depuración externa
+
+  # Servicio del Bróker de Mensajes
+  mq:
+    image: rabbitmq:3-management-alpine
+    container_name: task-manager-mq
+    ports:
+      - "5672:5672"   # Puerto para la comunicación AMQP
+      - "15672:15672" # Puerto para la interfaz de gestión web
+
+volumes:
+  postgres_data:
