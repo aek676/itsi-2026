@@ -34,7 +34,10 @@ def main():
             time.sleep(5)
 
     channel = connection.channel()
-    channel.queue_declare(queue='task_completed', durable=True)
+    
+    # Asegurar que la cola tiene los mismos argumentos que en el productor (web/app.py)
+    args = {'x-dead-letter-exchange': 'dlx'}
+    channel.queue_declare(queue='task_completed', durable=True, arguments=args)
 
     def callback_task_completed(ch, method, properties, body):
         task_data = json.loads(body)
