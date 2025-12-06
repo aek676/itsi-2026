@@ -18,9 +18,9 @@ def send_email_notification(task_data):
     
     try:
         response = requests.post(webhook_url, json=email_payload, timeout=5)
-        print(f" [✓] Email enviado para tarea ID={task_data.get('id')} (Status: {response.status_code})")
+        print(f" [✓] Email enviado para tarea ID={task_data.get('id')} (Status: {response.status_code})", flush=True)
     except requests.exceptions.RequestException as e:
-        print(f" [✗] Error al enviar email para tarea ID={task_data.get('id')}: {str(e)}")
+        print(f" [✗] Error al enviar email para tarea ID={task_data.get('id')}: {str(e)}", flush=True)
 
 def main():
     rabbitmq_url = os.environ.get('RABBITMQ_URL')
@@ -30,9 +30,9 @@ def main():
     while not connection:
         try:
             connection = pika.BlockingConnection(pika.URLParameters(rabbitmq_url))
-            print("Notifier: Conectado a RabbitMQ.")
+            print("Notifier: Conectado a RabbitMQ.", flush=True)
         except pika.exceptions.AMQPConnectionError:
-            print("Notifier: Esperando a RabbitMQ...")
+            print("Notifier: Esperando a RabbitMQ...", flush=True)
             time.sleep(5)
 
     channel = connection.channel()
@@ -40,14 +40,14 @@ def main():
 
     def callback_task_completed(ch, method, properties, body):
         task_data = json.loads(body)
-        print(f" [📧] Notificación recibida para tarea ID={task_data.get('id')}, Título='{task_data.get('title')}'")
+        print(f" [📧] Notificación recibida para tarea ID={task_data.get('id')}, Título='{task_data.get('title')}'", flush=True)
         send_email_notification(task_data)
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(queue='task_completed', on_message_callback=callback_task_completed)
 
-    print(' [*] Notifier esperando mensajes. Para salir presione CTRL+C')
+    print(' [*] Notifier esperando mensajes. Para salir presione CTRL+C', flush=True)
     channel.start_consuming()
 
 if __name__ == '__main__':

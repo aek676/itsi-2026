@@ -36,7 +36,7 @@ services:
       - ./notifier:/app  # Montaje para desarrollo en vivo
     environment:
       - RABBITMQ_URL=amqp://guest:guest@mq:5672/%2F
-      - WEBHOOK_URL=https://webhook.site/12345678-1234-1234-1234-123456789000
+      - WEBHOOK_URL=https://webhook.site/6affa107-8c08-4d45-99c8-b84d076b6784
     depends_on:
       - mq
 

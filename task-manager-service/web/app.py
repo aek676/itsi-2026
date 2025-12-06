@@ -41,9 +41,9 @@ def publish_message(queue_name, message):
             properties=pika.BasicProperties(delivery_mode=2) # make message persistent
         )
         connection.close()
-        print(f" [x] Sent message to queue '{queue_name}'")
+        print(f" [x] Sent message to queue '{queue_name}'", flush=True)
     except Exception as e:
-        print(f"Error publishing message: {e}")
+        print(f"Error publishing message: {e}", flush=True)
 
 # --- Endpoints de la API ---
 @app.route('/tasks', methods=['GET'])

@@ -3,6 +3,7 @@ import os
 import pika
 import json
 import time
+import sys
 
 def main():
     rabbitmq_url = os.environ.get('RABBITMQ_URL')
@@ -12,9 +13,9 @@ def main():
     while not connection:
         try:
             connection = pika.BlockingConnection(pika.URLParameters(rabbitmq_url))
-            print("Worker: Conectado a RabbitMQ.")
+            print("Worker: Conectado a RabbitMQ.", flush=True)
         except pika.exceptions.AMQPConnectionError:
-            print("Worker: Esperando a RabbitMQ...")
+            print("Worker: Esperando a RabbitMQ...", flush=True)
             time.sleep(5)
 
     channel = connection.channel()
@@ -22,7 +23,7 @@ def main():
 
     def callback(ch, method, properties, body):
         task_data = json.loads(body)
-        print(f" [x] Recibido y procesado nuevo task: ID={task_data.get('id')}, Título='{task_data.get('title')}'")
+        print(f" [x] Recibido y procesado nuevo task: ID={task_data.get('id')}, Título='{task_data.get('title')}'", flush=True)
         # Aquí iría la lógica de procesamiento (enviar email, etc.)
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
