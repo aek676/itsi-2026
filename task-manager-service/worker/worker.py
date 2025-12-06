@@ -9,7 +9,6 @@ def main():
     rabbitmq_url = os.environ.get('RABBITMQ_URL')
     connection = None
 
-    # Bucle para reintentar la conexión si RabbitMQ no está listo
     while not connection:
         try:
             connection = pika.BlockingConnection(pika.URLParameters(rabbitmq_url))
@@ -19,12 +18,28 @@ def main():
             time.sleep(5)
 
     channel = connection.channel()
-    channel.queue_declare(queue='task_created', durable=True)
+    
+    channel.exchange_declare(exchange='dlx', exchange_type='direct', durable=True)
+    channel.queue_declare(queue='tasks_failed', durable=True)
+    channel.queue_bind(exchange='dlx', queue='tasks_failed', routing_key='task_created')
+
+    args = {'x-dead-letter-exchange': 'dlx'}
+    channel.queue_declare(queue='task_created', durable=True, arguments=args)
 
     def callback(ch, method, properties, body):
-        task_data = json.loads(body)
+        try:
+            task_data = json.loads(body)
+        except json.JSONDecodeError:
+            print(f" [!] Mensaje no es JSON válido: {body}", flush=True)
+            ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
+            return
+
+        if 'title' not in task_data:
+            print(f" [!] Mensaje malformado (sin title): {body}", flush=True)
+            ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
+            return
+
         print(f" [x] Recibido y procesado nuevo task: ID={task_data.get('id')}, Título='{task_data.get('title')}'", flush=True)
-        # Aquí iría la lógica de procesamiento (enviar email, etc.)
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     channel.basic_qos(prefetch_count=1)

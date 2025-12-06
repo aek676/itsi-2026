@@ -1,4 +1,3 @@
-# web/app.py
 import os
 import pika
 import json
@@ -7,12 +6,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# --- Configuración de la Base de Datos ---
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# --- Modelo de la Base de Datos ---
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
@@ -27,13 +24,19 @@ class Task(db.Model):
             'done': self.done
         }
 
-# --- Configuración de RabbitMQ ---
 RABBITMQ_URL = os.environ.get('RABBITMQ_URL')
 def publish_message(queue_name, message):
     try:
         connection = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
         channel = connection.channel()
-        channel.queue_declare(queue=queue_name, durable=True)
+
+        channel.exchange_declare(exchange='dlx', exchange_type='direct', durable=True)
+        channel.queue_declare(queue='tasks_failed', durable=True)
+        channel.queue_bind(exchange='dlx', queue='tasks_failed', routing_key=queue_name)
+
+        args = {'x-dead-letter-exchange': 'dlx'}
+        channel.queue_declare(queue=queue_name, durable=True, arguments=args)
+
         channel.basic_publish(
             exchange='',
             routing_key=queue_name,
@@ -45,7 +48,6 @@ def publish_message(queue_name, message):
     except Exception as e:
         print(f"Error publishing message: {e}", flush=True)
 
-# --- Endpoints de la API ---
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
     tasks = Task.query.all()
@@ -63,10 +65,15 @@ def create_task():
     db.session.add(new_task)
     db.session.commit()
 
-    # Publicar mensaje en RabbitMQ
     publish_message('task_created', new_task.to_dict())
 
     return jsonify({'task': new_task.to_dict()}), 201
+
+@app.route('/tasks/test-malformed', methods=['POST'])
+def create_malformed_task():
+    message = {'description': 'This is a bad task with no title', 'id': 999}
+    publish_message('task_created', message)
+    return jsonify({'status': 'Malformed message sent'}), 200
 
 @app.route('/tasks/<int:task_id>/complete', methods=['PUT'])
 def complete_task(task_id):
@@ -77,14 +84,12 @@ def complete_task(task_id):
     task.done = True
     db.session.commit()
     
-    # Publicar mensaje en RabbitMQ
     publish_message('task_completed', task.to_dict())
     
     return jsonify({'task': task.to_dict()}), 200
 
-#... (otros endpoints como get_task, delete_task pueden ser añadidos de forma similar)
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all() # Crea las tablas si no existen
+        db.create_all()
     app.run(host='0.0.0.0', port=5000, debug=True)

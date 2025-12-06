@@ -1,5 +1,4 @@
 services:
-  # Servicio de la API Web (Flask)
   web:
     build: ./web
     restart: always
@@ -7,7 +6,7 @@ services:
     ports:
       - "5001:5000"
     volumes:
-      - ./web:/app  # Montaje para desarrollo en vivo
+      - ./web:/app
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/taskdb
       - RABBITMQ_URL=amqp://guest:guest@mq:5672/%2F
@@ -15,32 +14,40 @@ services:
       - db
       - mq
 
-  # Servicio del Trabajador Asíncrono (Consumer)
   worker:
     build: ./worker
     restart: always
     container_name: task-manager-worker
     volumes:
-      - ./worker:/app  # Montaje para desarrollo en vivo
+      - ./worker:/app
     environment:
       - RABBITMQ_URL=amqp://guest:guest@mq:5672/%2F
     depends_on:
       - mq
 
-  # Servicio de Notificaciones
   notifier:
     build: ./notifier
     restart: always
     container_name: task-manager-notifier
     volumes:
-      - ./notifier:/app  # Montaje para desarrollo en vivo
+      - ./notifier:/app
     environment:
       - RABBITMQ_URL=amqp://guest:guest@mq:5672/%2F
       - WEBHOOK_URL=https://webhook.site/6affa107-8c08-4d45-99c8-b84d076b6784
     depends_on:
       - mq
 
-  # Servicio de la Base de Datos
+  error_handler:
+    build: ./error_handler
+    restart: always
+    container_name: task-manager-error-handler
+    volumes:
+      - ./error_handler:/app
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@mq:5672/%2F
+    depends_on:
+      - mq
+
   db:
     image: postgres:14-alpine
     container_name: task-manager-db
@@ -50,17 +57,15 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=taskdb
-      # - POSTGRES_HOST_AUTH_METHOD=trust 
     ports:
-      - "5433:5432"  # Exponer para depuración externa
+      - "5433:5432" 
 
-  # Servicio del Bróker de Mensajes
   mq:
     image: rabbitmq:3-management-alpine
     container_name: task-manager-mq
     ports:
-      - "5672:5672"   # Puerto para la comunicación AMQP
-      - "15672:15672" # Puerto para la interfaz de gestión web
+      - "5672:5672" 
+      - "15672:15672"
 
 volumes:
   postgres_data:

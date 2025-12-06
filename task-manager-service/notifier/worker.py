@@ -5,7 +5,6 @@ import time
 import requests
 
 def send_email_notification(task_data):
-    """Simula el envío de email usando webhook.site"""
     webhook_url = os.environ.get('WEBHOOK_URL', 'https://webhook.site/12345678-1234-1234-1234-123456789000')
     
     email_payload = {
@@ -26,7 +25,6 @@ def main():
     rabbitmq_url = os.environ.get('RABBITMQ_URL')
     connection = None
 
-    # Bucle para reintentar la conexión si RabbitMQ no está listo
     while not connection:
         try:
             connection = pika.BlockingConnection(pika.URLParameters(rabbitmq_url))
