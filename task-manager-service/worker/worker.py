@@ -1,4 +1,3 @@
-# worker/worker.py
 import os
 import pika
 import json
