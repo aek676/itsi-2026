@@ -3,6 +3,7 @@ import pika
 import json
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import CheckConstraint
 
 app = Flask(__name__)
 
@@ -15,13 +16,19 @@ class Task(db.Model):
     title = db.Column(db.String(120), nullable=False)
     description = db.Column(db.String(255), nullable=True)
     done = db.Column(db.Boolean, default=False)
+    priority = db.Column(db.String(10), nullable=True)
+
+    __table_args__ = (
+        CheckConstraint("priority IN ('ALTA','MEDIA','BAJA') OR priority IS NULL", name='priority_check'),
+    )
 
     def to_dict(self):
         return {
             'id': self.id,
             'title': self.title,
             'description': self.description,
-            'done': self.done
+            'done': self.done,
+            'priority': self.priority
         }
 
 RABBITMQ_URL = os.environ.get('RABBITMQ_URL')
@@ -58,9 +65,15 @@ def create_task():
     if not request.json or not 'title' in request.json:
         return jsonify({'error': 'Bad request: title is required'}), 400
 
+    allowed_priorities = {None, 'ALTA', 'MEDIA', 'BAJA'}
+    priority = request.json.get('priority') if request.json is not None else None
+    if priority not in allowed_priorities:
+        return jsonify({'error': "Invalid priority: must be 'ALTA', 'MEDIA' or 'BAJA' (or null)"}), 400
+
     new_task = Task(
         title=request.json['title'],
-        description=request.json.get('description', "")
+        description=request.json.get('description', ""),
+        priority=priority
     )
     db.session.add(new_task)
     db.session.commit()
