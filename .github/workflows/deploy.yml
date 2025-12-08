@@ -1,0 +1,30 @@
+name: Deploy n8n Workflow
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'workflows/workflow.json'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '24'
+
+      - name: Install n8n-cli
+        run: npm install -g n8n-cli
+
+      - name: Deploy to Production
+        env:
+          N8N_HOST: ${{ secrets.N8N_PROD_HOST }}
+          N8N_API_KEY: ${{ secrets.N8N_PROD_API_KEY }}
+        run: |
+          n8n-cli workflows import workflows/workflow.json --name "Practica8 - Trabajo Guiado" --skip-validation
