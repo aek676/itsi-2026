@@ -8,6 +8,10 @@ services:
     environment:
      - N8N_RUNNERS_ENABLED=true
      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
+     - SHEET_ID_CHISTES=1vedoe_lG1FxF5YlDdtOw7J8xETcSiMIVmwM8qlFsUjg
+     - SHEET_NAME_PROG=Programming
+     - SHEET_NAME_MISC=Misc
+     - SHEET_NAME_DARK=Dark
     volumes:
       - ./local-files:/files
       - ./database.sqlite:/home/node/.n8n/database.sqlite
